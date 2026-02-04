@@ -1,0 +1,19 @@
+# dbt source configuration
+# This file defines the raw data sources that dbt will use for transformations.
+version: 2
+
+sources:
+  - name: dev # The name of the source schema/namespace in dbt
+    database: db # The physical database name
+    tables:
+      - name: raw_weather_data # The name of the table in the source database
+        description: Raw weather data ingested from the Weatherstack API.
+        columns:
+          - name: id # Primary key for the record
+          - name: city # Name of the city
+          - name: temperature # Current temperature in Celsius
+          - name: weather_description # Fixed: matched with the database schema in insert_records.py
+          - name: wind_speed # Wind speed in km/h
+          - name: time # Local time of observation
+          - name: inserted_at # Timestamp when the record was inserted
+          - name: utc_offset # UTC offset of the location

@@ -1,0 +1,15 @@
+# dbt profiles configuration
+# This file defines how dbt connects to your data warehouse.
+
+my_project:
+  outputs:
+    dev: # Development environment settings
+      dbname: db # The name of the database
+      host: db # The hostname (matches the 'db' service in docker-compose)
+      pass: db_password # Database password
+      port: 5432 # Standard PostgreSQL port
+      schema: dev # The schema where dbt will build models
+      threads: 4 # Number of concurrent threads for model execution
+      type: postgres # The database adapter type
+      user: db_user # Database username
+  target: dev # The default output target
