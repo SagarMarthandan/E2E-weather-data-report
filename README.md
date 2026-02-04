@@ -6,7 +6,7 @@ An end-to-end data engineering pipeline designed to ingest real-time weather dat
 
 ## 🛠️ Tech Stack
 
-![My Tech Stack](https://skillicons.dev/icons?i=python,postgres,docker,airflow,dbt,redis)
+![My Tech Stack](https://skillicons.dev/icons?icons=python,postgresql,docker,airflow,dbt,redis)
 
 *   **Languages:** Python, SQL
 *   **Orchestration:** Apache Airflow
@@ -61,6 +61,16 @@ graph TD
     AF -->|Trigger Ingestion| REQ
     AF -->|Trigger dbt run| Transformation_Layer
 ```
+
+---
+
+## 🌉 The WSL 2 & Docker Desktop Bridge
+
+This pipeline leverages the high-performance integration between **Windows**, **WSL 2**, and **Docker Desktop**:
+
+1.  **The Socket Bridge:** Docker Desktop creates a symbolic link for the Docker Unix socket (`/var/run/docker.sock`) inside the WSL 2 environment.
+2.  **DooD (Docker-out-of-Docker):** The Airflow container mounts this socket from WSL. When the `DockerOperator` triggers a task, it doesn't run Docker *inside* Airflow; instead, it sends a command through the socket to the Docker Engine on the Windows host.
+3.  **Sibling Containers:** This allows Airflow to spin up "sibling" containers (like the `dbt` container) that run alongside it on the same network, sharing the same Docker resources.
 
 ---
 
@@ -138,15 +148,43 @@ The final `daily_average` table is connected to **Apache Superset**, where dashb
 
 ---
 
-## 🔧 Setup & Installation
+##  How to Run (Step-by-Step)
 
-1.  **Clone the repository:**
+### 1. API Setup
+Sign up at Weatherstack and obtain your free API Access Key.
+
+### 2. Environment Configuration
+In the project root, create a file named `.env`:
+```bash
+WEATHERSTACK_API_KEY=your_api_key_here
+POSTGRES_USER=airflow
+POSTGRES_PASSWORD=airflow
+POSTGRES_DB=weather_db
+```
+
+### 3. Launch the Infrastructure
+Open your WSL terminal and run:
+```bash
+docker-compose up -d
+```
+
+### 4. Initialize Apache Superset
+Superset requires a one-time setup to create the admin user and initialize the metadata database:
+```bash
+docker-compose exec superset superset db upgrade
+docker-compose exec superset superset fab create-admin --username admin --firstname Admin --lastname User --email admin@fab.org --password admin
+docker-compose exec superset superset init
+```
+
+### 5. Trigger the Pipeline
+1. Access the Airflow UI at `http://localhost:8080` (Login: `airflow` / `key-generated-in-airflow-logs`).
+2. Locate the `weather-api-dbt-orchestrator` DAG.
+3. Toggle the DAG to **Unpause** and click **Trigger DAG**.
+
+### 6. Visualize Data
+1. Access Superset at `http://localhost:8088` (Login: `admin` / `admin`).
+2. Connect to the Postgres database using the connection string:
     ```bash
-    git clone https://github.com/your-repo/weather-data-project.git
+    postgresql://airflow:airflow@postgres:5432/weather_db
     ```
-2.  **Configure Environment Variables:** Create a `.env` file with your API keys and database credentials.
-3.  **Launch the Stack:**
-    ```bash
-    docker-compose up -d
-    ```
-4.  **Access Airflow:** Navigate to `localhost:8080` to enable the orchestrator DAG.
+3. Query the `dev.daily_average` table to build your charts and dashboards.
