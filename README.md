@@ -6,7 +6,12 @@ An end-to-end data engineering pipeline designed to ingest real-time weather dat
 
 ## 🛠️ Tech Stack
 
-![My Tech Stack](https://skillicons.dev/icons?icons=python,postgresql,docker,airflow,dbt,redis)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Airflow](https://img.shields.io/badge/Airflow-017CEE?style=for-the-badge&logo=Apache%20Airflow&logoColor=white)
+![dbt](https://img.shields.io/badge/dbt-FF694B?style=for-the-badge&logo=dbt&logoColor=white)
+![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
 
 *   **Languages:** Python, SQL
 *   **Orchestration:** Apache Airflow
